@@ -12,22 +12,26 @@ function loadTasks() {
        row.insertCell(3).textContent = task.notes;
 
         });
-		        if (typeof updateMapMarkers === 'function') {
-            updateMapMarkers();
-        }
+if (typeof updateMapMarkers === 'function') {
+    updateMapMarkers();
+}
+if (typeof updateLogTwsChart === 'function') {
+    updateLogTwsChart();
+}
+
     } catch (error) {
         console.error("Errore caricando i task:", error);
-		loadTasks();
+		
 		
     }
 }
 
 function startTimer() {
-    const timer = document.getElementById('timer');
+    const lastActivityDiv = document.getElementById('lastActivity');
     let last = parseInt(localStorage.getItem('lastSavedTime'), 10);
 
     if (!last) {
-        timer.textContent = 'Nessuna attività salvata';
+        lastActivityDiv.textContent = 'Nessuna attività salvata';
         return;
     }
 
@@ -37,13 +41,14 @@ function startTimer() {
         const h = String(Math.floor(diff / 3600)).padStart(2, '0');
         const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
         const s = String(diff % 60).padStart(2, '0');
-        timer.textContent = `Ultima attività: ${h}:${m}:${s}`;
+        lastActivityDiv.textContent = `Ultima attività: ${h}:${m}:${s}`;
     }
 
     if (window.timerInterval) clearInterval(window.timerInterval);
     update();
     window.timerInterval = setInterval(update, 1000);
 }
+
 
 function saveActivity() {
     const data = {
@@ -152,6 +157,8 @@ function updateMapMarkers() {
 
     const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
 
+    const routeCoords = [];
+
     tasks.forEach(task => {
         const match = task.location?.match(/Lat[:\s]*([0-9.\-]+),?\s*Lon[:\s]*([0-9.\-]+)/);
         if (match) {
@@ -159,12 +166,26 @@ function updateMapMarkers() {
             const lon = parseFloat(match[2]);
 
             if (!isNaN(lat) && !isNaN(lon)) {
-                L.marker([lat, lon]).addTo(markersLayer)
-                 .bindPopup(`<strong>${task.date}</strong><br>${task.details}<br>${task.notes || ''}`);
+                const marker = L.marker([lat, lon]).addTo(markersLayer)
+                    .bindPopup(`<strong>${task.date}</strong><br>${task.details}<br>${task.notes || ''}`);
+                routeCoords.push([lat, lon]);
             }
         }
     });
+
+    if (routeCoords.length > 1) {
+        const polyline = L.polyline(routeCoords, { color: 'blue' }).addTo(markersLayer);
+        map.fitBounds(polyline.getBounds());
+
+        const totalNM = calculateTotalDistanceNM(routeCoords);
+        const distanceDiv = document.getElementById('totalDistance');
+distanceDiv.innerHTML = `Distanza Approssimativa: <strong>${totalNM} NM</strong>`;
+
+    }
+
+
 }
+
 document.getElementById('exportPDF').addEventListener('click', () => {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
@@ -190,4 +211,102 @@ document.getElementById('exportPDF').addEventListener('click', () => {
 
     doc.save("storico_navigazione.pdf");
 });
+function calculateTotalDistanceNM(coords) {
+    const R = 6371; // Raggio della Terra in km
+    let total = 0;
+
+    for (let i = 1; i < coords.length; i++) {
+        const [lat1, lon1] = coords[i - 1];
+        const [lat2, lon2] = coords[i];
+
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) ** 2 +
+                  Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                  Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c;
+        total += d;
+    }
+
+    return (total * 0.539957).toFixed(2); // km -> NM
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+function updateLogTwsChart() {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    const labels = [];
+    const logData = [];
+    const twsData = [];
+
+    tasks.forEach(task => {
+        labels.push(task.date);
+        const match = task.details.match(/TWS: (\d+(?:\.\d+)?) kt, LOG: (\d+(?:\.\d+)?)/);
+if (task.details && typeof task.details === 'string') {
+    const match = task.details.match(/TWS: (\d+(?:\.\d+)?) kt, LOG: (\d+(?:\.\d+)?)/);
+    if (match) {
+        twsData.push(parseFloat(match[1]));
+        logData.push(parseFloat(match[2]));
+    } else {
+        twsData.push(null);
+        logData.push(null);
+    }
+}
+
+    });
+
+    const ctx = document.getElementById('logTwsChart').getContext('2d');
+if (window.logTwsChart && typeof window.logTwsChart.destroy === 'function') {
+    window.logTwsChart.destroy();
+}
+
+
+    window.logTwsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'LOG (kt)',
+                    data: logData,
+                    borderColor: 'blue',
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: 'TWS (kt)',
+                    data: twsData,
+                    borderColor: 'green',
+                    tension: 0.3,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    title: { display: true, text: 'Velocità (kt)' }
+                },
+                x: {
+                    title: { display: true, text: 'Data e Ora' },
+                    ticks: {
+                        maxTicksLimit: 8,
+                        autoSkip: true
+                    }
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
+
 
