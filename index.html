@@ -1,150 +1,312 @@
-<!DOCTYPE html>
-<html lang="it">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>logbook</title>
-    <link rel="stylesheet" href="styles.css">
-	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+function loadTasks() {
+    const tasksTable = document.getElementById('tasksTable').getElementsByTagName('tbody')[0];
+    tasksTable.innerHTML = "";
+
+    try {
+        let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
+        tasks.forEach(task => {
+            const row = tasksTable.insertRow();
+       row.insertCell(0).textContent = task.date;
+       row.insertCell(1).textContent = task.location || '—';
+       row.insertCell(2).textContent = task.details;
+       row.insertCell(3).textContent = task.notes;
+
+        });
+if (typeof updateMapMarkers === 'function') {
+    updateMapMarkers();
+}
+if (typeof updateLogTwsChart === 'function') {
+    updateLogTwsChart();
+}
+
+    } catch (error) {
+        console.error("Errore caricando i task:", error);
+		
+		
+    }
+}
+
+function startTimer() {
+    const lastActivityDiv = document.getElementById('lastActivity');
+    let last = parseInt(localStorage.getItem('lastSavedTime'), 10);
+
+    if (!last) {
+        lastActivityDiv.textContent = 'Nessuna attività salvata';
+        return;
+    }
+
+    function update() {
+        const now = Date.now();
+        const diff = Math.floor((now - last) / 1000);
+        const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+        const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+        const s = String(diff % 60).padStart(2, '0');
+        lastActivityDiv.textContent = `Ultima attività: ${h}:${m}:${s}`;
+    }
+
+    if (window.timerInterval) clearInterval(window.timerInterval);
+    update();
+    window.timerInterval = setInterval(update, 1000);
+}
 
 
-</head>
-<body>
-<nav class="navbar">
-    <div class="navbar-title">📘 Logbook</div>
-    <div id="timer" class="timer"></div> <!-- SPOSTATO QUI -->
-    <div class="navbar-actions">
-        <button class="save-btn" onclick="saveActivity()">Salva</button>
-        <button id="exportPDF">Esporta PDF</button>
-        <button id="clearHistory">Pulisci</button>
-    </div>
-</nav>
+function saveActivity() {
+    const data = {
+        date: new Date().toLocaleString(),
+        details: `TWA: ${twa.value}° TWS: ${tws.value} kt, LOG: ${log.value} kt, Vele: ${sails.value}, Altezza Onda: ${waveHeight.value} m, Direzione: ${direction.value}°, Intensità: ${intensity.value} kt, Lunghezza Onda: ${waveLength.value}`,
+        notes: notes.value,
+        location: "Posizione in acquisizione..."
+    };
+
+    if (navigator.geolocation) {
+        // Mostra subito che stiamo cercando la posizione
+        save(); // salva subito con "Posizione in acquisizione..."
+
+navigator.geolocation.getCurrentPosition(
+    pos => {
+        const lat = pos.coords.latitude.toFixed(6);
+        const lon = pos.coords.longitude.toFixed(6);
+        const accuracy = pos.coords.accuracy;
+
+if (accuracy > 100) {
+    data.location = `Posizione imprecisa (>100m): Lat ${lat}, Lon ${lon} (±${Math.round(accuracy)}m)`;
+    document.getElementById('locationWarning').style.display = 'block';
+} else {
+    data.location = `Lat: ${lat}, Lon: ${lon} (±${Math.round(accuracy)}m)`;
+    document.getElementById('locationWarning').style.display = 'none';
+}
 
 
-    <div class="container">
+        finalize();
+    },
+    error => {
+        switch (error.code) {
+            case error.PERMISSION_DENIED:
+                data.location = "Permesso posizione negato";
+                break;
+            case error.POSITION_UNAVAILABLE:
+                data.location = "Posizione non disponibile";
+                break;
+            case error.TIMEOUT:
+                data.location = "Timeout nella localizzazione";
+                break;
+            default:
+                data.location = "Errore sconosciuto";
+        }
+        finalize();
+    },
+    {
+        enableHighAccuracy: true,
+        timeout: 10000,
+        maximumAge: 0
+    }
+);
 
-        <div class="form-wrapper">
-           <form id="taskForm" method="post" action="#">
-    <!-- Sezione sinistra -->
-    <fieldset class="left-form">
-        <label for="twa">TWA° e TWS (kt)</label>
-        <div class="flex-row">
-            <select id="twa" required aria-label="Scegli il valore di TWA">
-                <option value="32">32°</option>
-                <script>
-                    for (let i = 33; i <= 180; i++) {
-                        document.write(`<option value="${i}">${i}°</option>`);
+    } else {
+        finalize();
+    }
+
+    function save() {
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        tasks.push(data);
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        localStorage.setItem('lastSavedTime', Date.now());
+        loadTasks();
+        startTimer();
+    }
+
+    function finalize() {
+        const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+        // Sovrascrive l’ultimo inserimento (quello con posizione in attesa)
+        tasks[tasks.length - 1].location = data.location;
+        localStorage.setItem('tasks', JSON.stringify(tasks));
+        loadTasks();
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+    startTimer();
+	initMap(); 
+
+    const clearHistoryBtn = document.getElementById('clearHistory');
+    if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', () => {
+        localStorage.clear();
+        loadTasks();
+        timer.textContent = '';
+		location.reload();
+    });
+});
+
+let map;
+let markersLayer;
+
+function initMap() {
+    map = L.map('map').setView([41.9, 12.5], 5); // Italia centro
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    markersLayer = L.layerGroup().addTo(map);
+    updateMapMarkers();
+}
+
+function updateMapMarkers() {
+    if (!markersLayer) return;
+    markersLayer.clearLayers();
+
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    const routeCoords = [];
+
+    tasks.forEach(task => {
+        const match = task.location?.match(/Lat[:\s]*([0-9.\-]+),?\s*Lon[:\s]*([0-9.\-]+)/);
+        if (match) {
+            const lat = parseFloat(match[1]);
+            const lon = parseFloat(match[2]);
+
+            if (!isNaN(lat) && !isNaN(lon)) {
+                const marker = L.marker([lat, lon]).addTo(markersLayer)
+                    .bindPopup(`<strong>${task.date}</strong><br>${task.details}<br>${task.notes || ''}`);
+                routeCoords.push([lat, lon]);
+            }
+        }
+    });
+
+    if (routeCoords.length > 1) {
+        const polyline = L.polyline(routeCoords, { color: 'blue' }).addTo(markersLayer);
+        map.fitBounds(polyline.getBounds());
+
+        const totalNM = calculateTotalDistanceNM(routeCoords);
+        const distanceDiv = document.getElementById('totalDistance');
+distanceDiv.innerHTML = `Distanza Approssimativa: <strong>${totalNM} NM</strong>`;
+
+    }
+
+
+}
+
+document.getElementById('exportPDF').addEventListener('click', () => {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const headers = [["Data e Ora", "Posizione", "Dettagli", "Note"]];
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    const rows = tasks.map(task => [
+        task.date,
+        task.location || '—',
+        task.details,
+        task.notes || ''
+    ]);
+
+    doc.text("Storico Navigazione", 14, 16);
+    doc.autoTable({
+        startY: 20,
+        head: headers,
+        body: rows,
+        styles: { fontSize: 8 },
+        headStyles: { fillColor: [68, 114, 196] }
+    });
+
+    doc.save("storico_navigazione.pdf");
+});
+function calculateTotalDistanceNM(coords) {
+    const R = 6371; // Raggio della Terra in km
+    let total = 0;
+
+    for (let i = 1; i < coords.length; i++) {
+        const [lat1, lon1] = coords[i - 1];
+        const [lat2, lon2] = coords[i];
+
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat / 2) ** 2 +
+                  Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                  Math.sin(dLon / 2) ** 2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        const d = R * c;
+        total += d;
+    }
+
+    return (total * 0.539957).toFixed(2); // km -> NM
+}
+
+function toRad(deg) {
+    return deg * Math.PI / 180;
+}
+function updateLogTwsChart() {
+    const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+
+    const labels = [];
+    const logData = [];
+    const twsData = [];
+
+    tasks.forEach(task => {
+        labels.push(task.date);
+        const match = task.details.match(/TWS: (\d+(?:\.\d+)?) kt, LOG: (\d+(?:\.\d+)?)/);
+if (task.details && typeof task.details === 'string') {
+    const match = task.details.match(/TWS: (\d+(?:\.\d+)?) kt, LOG: (\d+(?:\.\d+)?)/);
+    if (match) {
+        twsData.push(parseFloat(match[1]));
+        logData.push(parseFloat(match[2]));
+    } else {
+        twsData.push(null);
+        logData.push(null);
+    }
+}
+
+    });
+
+    const ctx = document.getElementById('logTwsChart').getContext('2d');
+if (window.logTwsChart && typeof window.logTwsChart.destroy === 'function') {
+    window.logTwsChart.destroy();
+}
+
+
+    window.logTwsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [
+                {
+                    label: 'LOG (kt)',
+                    data: logData,
+                    borderColor: 'blue',
+                    tension: 0.3,
+                    fill: false
+                },
+                {
+                    label: 'TWS (kt)',
+                    data: twsData,
+                    borderColor: 'green',
+                    tension: 0.3,
+                    fill: false
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    title: { display: true, text: 'Velocità (kt)' }
+                },
+                x: {
+                    title: { display: true, text: 'Data e Ora' },
+                    ticks: {
+                        maxTicksLimit: 8,
+                        autoSkip: true
                     }
-                </script>
-            </select>
-            <select id="tws" required aria-label="Scegli il valore di TWS">
-                <option value="0">0 kt</option>
-                <script>
-                    for (let i = 0.5; i <= 50; i += 0.5) {
-                        document.write(`<option value="${i}">${i} kt</option>`);
-                    }
-                </script>
-            </select>
-        </div>
+                }
+            },
+            plugins: {
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+}
 
-        <label for="log">LOG (kt) e Vele</label>
-        <div class="flex-row">
-            <select id="log" required aria-label="Scegli il valore di LOG">
-                <option value="0">0 kt</option>
-                <script>
-                    for (let i = 0.5; i <= 20; i += 0.5) {
-                        document.write(`<option value="${i}">${i} kt</option>`);
-                    }
-                </script>
-            </select>
-            <select id="sails" aria-label="Seleziona la vela">
-                <option value="MJ0">MJ0</option>
-                <option value="MJ1">MJ1</option>
-                <option value="MJ2">MJ2</option>
-                <option value="MJ3">MJ3</option>
-                <option value="MA1">MA1</option>
-                <option value="MA2">MA2</option>
-                <option value="MA3">MA3</option>
-            </select>				
-        </div>
-    </fieldset>
 
-    <!-- Sezione destra -->
-    <fieldset class="right-form">
-        <label for="waveHeight">Altezza Onda (m) e Lunghezza Onda</label>
-        <div class="flex-row">
-            <select id="waveHeight" required aria-label="Scegli l'altezza dell'onda">
-                <option value="0">0 m</option>
-                <script>
-                    for (let i = 0; i <= 4; i += 0.25) {
-                        document.write(`<option value="${i}">${i} m</option>`);
-                    }
-                </script>
-            </select>
-            <select id="waveLength" required aria-label="Scegli la lunghezza dell'onda">
-                <option value="corta">Corta</option>
-                <option value="lunga">Lunga</option>
-            </select>
-        </div>
-
-        <label for="direction">Direzione° e Intensità (kt)</label>
-        <div class="flex-row">
-            <select id="direction" required aria-label="Scegli la direzione della corrente">
-                <option value="0">0°</option>
-                <script>
-                    for (let i = 10; i <= 180; i += 10) {
-                        document.write(`<option value="${i}">${i}°</option>`);
-                    }
-                </script>
-            </select>
-            <select id="intensity" required aria-label="Scegli l'intensità della corrente">
-                <option value="0">0 kt</option>
-                <script>
-                    for (let i = 0.5; i <= 20; i += 0.5) {
-                        document.write(`<option value="${i}">${i} kt</option>`);
-                    }
-                </script>
-            </select>
-        </div>
-    </fieldset>
-
-    <!-- Sezione Note -->
-    <div class="notes-section">
-        <textarea id="notes" rows="4" placeholder="Inserisci Note" aria-label="Aggiungi eventuali note"></textarea>
-    </div>
-</form>
-
-        </div> <!-- fine form-wrapper -->
-
-        <div class="activities">
-            <h2>Storico</h2>
-            <table id="tasksTable">
-           <thead>
-    <tr>
-        <th>Data e Ora</th>
-        <th>Posizione</th>
-        <th>Dettagli</th>
-        <th>Note</th>
-    </tr>
-</thead>
-
-                <tbody></tbody>
-            </table>
-        </div>
-
-        <!-- Bottoni spostati sotto alla pagina -->
-        <div class="buttons-container">
-			<div id="locationWarning" style="display: none; color: red; margin-top: 10px;">
-            ⚠️ Attenzione: Precisione scarsa (>100m)
-            </div>
-        </div>
-		<div id="map" style="height: 400px; width: 100%; margin-top: 30px;"></div>
-    </div>
-
-    <script src="function.js"></script>
-</body>
-</html>
