@@ -1,8 +1,6 @@
 # 📘logbook
-Il Sito permetti di salvare in locale i dati di navigazione in modo semplice veloce.
+Il Sito permetti di salvare i dati di navigazione in modo semplice e veloce.
 
-Consulta la mappa per vedere i Marker con i tuoi dati Salvati.
+La Mappa mostra i Marker con i dati e traccia una rotta.
 
-Esporta lo storico in un PDF.
-
-
+Il Grafico mostra l'andamento del LOG e del Vento.
