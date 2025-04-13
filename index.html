@@ -42,17 +42,17 @@
         <label for="twa">TWA° e TWS (kt)</label>
         <div class="flex-row">
             <select id="twa" required aria-label="Scegli il valore di TWA">
-                <option value="32">32°</option>
+                <option value="36">36°</option>
                 <script>
-                    for (let i = 33; i <= 180; i++) {
+                    for (let i = 36; i <= 180; i++) {
                         document.write(`<option value="${i}">${i}°</option>`);
                     }
                 </script>
             </select>
             <select id="tws" required aria-label="Scegli il valore di TWS">
-                <option value="0">0 kt</option>
+                <option value="4"> 4kt</option>
                 <script>
-                    for (let i = 0.5; i <= 50; i += 0.5) {
+                    for (let i = 4; i <= 50; i += 0.5) {
                         document.write(`<option value="${i}">${i} kt</option>`);
                     }
                 </script>
