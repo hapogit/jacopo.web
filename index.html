@@ -2,22 +2,29 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Collegamenti</title>
+    <title>App</title>
     <style>
+        :root {
+            --navy: #001f3f;
+            --navy-light: #004080;
+            --text: #333;
+            --background: #f9f9f9;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
+            background-color: var(--background);
+            color: var(--text);
             margin: 0;
             padding-top: 80px; /* spazio per la navbar */
         }
 
-        /* Barra di navigazione */
+        /* Navbar */
         nav {
             position: fixed;
             top: 0;
             width: 100%;
-            background-color: #ffffff;
+            background-color: var(--navy);
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
             display: flex;
             justify-content: center;
@@ -27,14 +34,14 @@
 
         nav a {
             margin: 0 20px;
-            color: #0077cc;
+            color: white;
             text-decoration: none;
             font-weight: 600;
             transition: color 0.3s;
         }
 
         nav a:hover {
-            color: #005999;
+            color: var(--navy-light);
         }
 
         header {
@@ -71,13 +78,13 @@
 
         a.link {
             text-decoration: none;
-            color: #0077cc;
+            color: var(--navy);
             font-size: 1.2em;
             transition: color 0.3s;
         }
 
         a.link:hover {
-            color: #005999;
+            color: var(--navy-light);
         }
 
         section {
@@ -97,39 +104,36 @@
 </head>
 <body>
 
-    <!-- NAVBAR -->
+    <!-- Navbar -->
     <nav>
-        <a href="pagina1.html">Pagina 1</a>
-        <a href="pagina2.html">Pagina 2</a>
+        <a href="logbook.html">Logbook</a>
         <a href="#chisiamo">Chi siamo</a>
     </nav>
 
-    <!-- HEADER con logo -->
+    <!-- Header con logo -->
     <header>
-        <img src="icon-512.png" alt="Logo" class="logo">
-        <h1>Benvenuto!</h1>
+        <img src="incon-512.png" alt="Logo" class="logo">
+        <h1>App</h1>
         <p>Scegli una pagina da visitare:</p>
     </header>
 
-    <!-- LINKS -->
+    <!-- Link -->
     <ul>
-        <li><a class="link" href="pagina1.html">Pagina 1</a></li>
-        <li><a class="link" href="pagina2.html">Pagina 2</a></li>
-        <li><a class="link" href="https://www.example.com" target="_blank">Sito Esterno</a></li>
+        <li><a class="link" href="pagina1.html">Accedi al Logbook</a></li>
     </ul>
 
-    <!-- SEZIONE CHI SIAMO -->
+    <!-- Sezione Chi siamo -->
     <section id="chisiamo">
         <h2>Chi siamo</h2>
         <p>
-            Questo sito nasce dalla passione per il mare e la navigazione. 
-            Il nostro obiettivo è offrire collegamenti utili e informazioni in un’interfaccia semplice, pulita e veloce.
+            App è una piattaforma essenziale per raccogliere, organizzare e navigare tra i tuoi strumenti digitali. 
+            Un'interfaccia pulita per aiutarti a restare concentrato su ciò che conta.
         </p>
     </section>
 
-    <!-- FOOTER -->
+    <!-- Footer -->
     <footer>
-        &copy; 2025 Il tuo nome. Tutti i diritti riservati.
+        &copy; 2025 App. Tutti i diritti riservati.
     </footer>
 
 </body>
