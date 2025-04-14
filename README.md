@@ -41,7 +41,7 @@
 
 ## 👤 Autore
 
-- **hapogit**: [GitHub Repository](https://github.com/hapogit/repo.logbook)
+- **hapogit**: [GitHub Repository](https://github.com/hapogit/li6r3tt0)
 - Velista appassionato e autore del progetto
 - Buon vento! ⛵️
 
