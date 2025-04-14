@@ -2,15 +2,75 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Pagina di Collegamenti</title>
+    <title>Collegamenti</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        img.logo {
+            width: 100px;
+            height: auto;
+            margin-bottom: 10px;
+        }
+
+        h1 {
+            font-size: 2em;
+            margin: 0;
+        }
+
+        p {
+            margin-bottom: 30px;
+            color: #666;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin: 10px 0;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0077cc;
+            font-size: 1.2em;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: #005999;
+        }
+    </style>
 </head>
 <body>
-    <h1>Benvenuto!</h1>
-    <p>Qui trovi i collegamenti ad altre pagine:</p>
+    <header>
+        <img src="logo.png" alt="Logo" class="logo">
+        <h1>Benvenuto!</h1>
+    </header>
+
+    <p>Scegli una pagina da visitare:</p>
     <ul>
-        <li><a href="pagina1.html">Vai a Pagina 1</a></li>
-        <li><a href="pagina2.html">Vai a Pagina 2</a></li>
-        <li><a href="https://www.example.com">Vai a un sito esterno</a></li>
+        <li><a href="pagina1.html">Pagina 1</a></li>
+        <li><a href="pagina2.html">Pagina 2</a></li>
+        <li><a href="https://www.example.com" target="_blank">Sito Esterno</a></li>
     </ul>
 </body>
 </html>
