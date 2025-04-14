@@ -40,7 +40,7 @@ function updateMapMarkers() {
 
         const totalNM = calculateTotalDistanceNM(routeCoords);
         const distanceDiv = document.getElementById('totalDistance');
-        distanceDiv.innerHTML = `Distanza Approssimativa: <strong>${totalNM} M</strong>`;
+        distanceDiv.innerHTML = `🗺️ Distanza Approssimativa: <strong>${totalNM} M</strong>`;
     }
 }
 

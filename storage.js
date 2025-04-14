@@ -58,35 +58,3 @@ function clearAllData() {
     location.reload();
 }
 
-function exportJSON() {
-    const data = JSON.parse(localStorage.getItem("tasks") || "[]");
-    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.download = "storico_logbook.json";
-    link.click();
-}
-
-function importJSONFromFile(file) {
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        try {
-            const importedData = JSON.parse(e.target.result);
-            if (Array.isArray(importedData)) {
-                const currentData = JSON.parse(localStorage.getItem("tasks") || "[]");
-                const merged = currentData.concat(importedData);
-                localStorage.setItem("tasks", JSON.stringify(merged));
-                localStorage.setItem("lastSavedTime", Date.now());
-                loadTasks();
-                startTimer();
-                alert("Importazione completata!");
-            } else {
-                alert("Formato non valido.");
-            }
-        } catch (err) {
-            alert("Errore durante l'importazione.");
-            console.error(err);
-        }
-    };
-    reader.readAsText(file);
-}

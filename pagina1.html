@@ -9,32 +9,11 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-
 
 </head>
 <body>
-<nav class="navbar">
-    <div class="navbar-title">📕 Logbook</div>
-    <div id="timer" class="timer"> 
-	<div id="lastActivity">📝 Ultima attività:</div>
-    <div id="totalDistance">🗺️ Distanza Totale: 0 M</div> 
-	</div>
-    <div class="navbar-actions">
-        <button class="save-btn">💾 Salva Attività</button>
-        <button id="clearHistory">🧹 Pulisci Storico</button>
-		<button id="downloadJSON">📥 Esporta JSON</button>
-        <label for="importJSON" class="custom-upload">📤 Importa JSON</label>
-        <input type="file" id="importJSON" accept=".json" style="display: none;" />
-
-    </div>
-</nav>
-
-
     <div class="container">
-
         <div class="form-wrapper">
            <form id="taskForm" method="post" action="#">
     <!-- Sezione sinistra -->
@@ -42,9 +21,9 @@
         <label for="twa">TWA° e TWS (kt)</label>
         <div class="flex-row">
             <select id="twa" required aria-label="Scegli il valore di TWA">
-                <option value="32">32°</option>
+                <option value="36">36°</option>
                 <script>
-                    for (let i = 33; i <= 180; i++) {
+                    for (let i = 37; i <= 180; i++) {
                         document.write(`<option value="${i}">${i}°</option>`);
                     }
                 </script>
@@ -52,7 +31,7 @@
             <select id="tws" required aria-label="Scegli il valore di TWS">
                 <option value="4">4 kt</option>
                 <script>
-                    for (let i = 4; i <= 50; i += 0.5) {
+                    for (let i = 1; i <= 50; i += 0.5) {
                         document.write(`<option value="${i}">${i} kt</option>`);
                     }
                 </script>
@@ -64,7 +43,7 @@
             <select id="log" required aria-label="Scegli il valore di LOG">
                 <option value="2">2 kt</option>
                 <script>
-                    for (let i = 2; i <= 20; i += 0.5) {
+                    for (let i = 2.5; i <= 20; i += 0.5) {
                         document.write(`<option value="${i}">${i} kt</option>`);
                     }
                 </script>
@@ -88,7 +67,7 @@
             <select id="waveHeight" required aria-label="Scegli l'altezza dell'onda">
                 <option value="0.25">0,25 m</option>
                 <script>
-                    for (let i = 0.25; i <= 4; i += 0.25) {
+                    for (let i = 0.5; i <= 4; i += 0.25) {
                         document.write(`<option value="${i}">${i} m</option>`);
                     }
                 </script>
@@ -127,9 +106,22 @@
 </form>
 
         </div> <!-- fine form-wrapper -->
-
+        
         <div class="activities">
+		<div class="activities-header">
             <h2>🗃️ Storico</h2>
+		<div class="activities-actions">
+	    <button class="save-btn">💾 Salva Attività</button>
+        <button id="clearHistory">🧹 Pulisci Storico</button>
+		</div>
+		</div>
+		<div id="timer" class="timer"> 
+	    <div id="lastActivity">📝 Ultima attività:</div>
+		<div class="warning-container">
+		<div id="locationWarning" style="display: none; color: red; ">⚠️ GPS Impreciso (>100m)</div>
+        </div>
+        <div id="totalDistance">🗺️ Distanza Totale: 0 M</div> 
+	    </div>
             <table id="tasksTable">
 <thead>
   <tr>
@@ -145,16 +137,10 @@
                 <tbody></tbody>
             </table>
         </div>
-        <div class="buttons-container">
-		<div id="locationWarning" style="display: none; color: red; margin-top: 10px;">⚠️ GPS Impreciso (>100m)
-		</div>
-        </div>
-		<div id="map" style="height: 400px; width: 100%; margin-top: 30px;"></div>
-		<canvas id="logTwsChart" style="width: 100%; max-height: 300px; margin-top: 30px;"></canvas>
-    </div>
+
+		<div id="map"></div>
 
 <script src="map.js"></script>
-<script src="chart.js"></script>
 <script src="storage.js"></script>
 <script src="geolocation.js"></script>
 <script src="function.js"></script>
