@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+    <html lang="it">
+        <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>logbook</title>
+        <link rel="stylesheet" href="logbook.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+		    <nav>
+			  <ul class="menu">
+		        <li class="dropdown">
+          <a href="../index.html"><h1>📒</h1></a>
+          <ul class="dropdown-menu">
+            <li><a href="../manuale.html">Manule</a></li>
+
+          </ul>
+        </li>
+		  </ul>
+		    </nav>
+        </head>
+        <body>
+            <form id="taskForm" method="post" action="#">
+                <label for="twa">TWA° e TWS (kt)</label>
+                    <div class="flex-row">
+                        <select id="twa" required aria-label="Scegli il valore di TWA">
+                            <option value="40">40°</option>
+                                <script>
+                                for (let i = 41; i <= 180; i++) {
+                                document.write(`<option value="${i}">${i}°</option>`);
+                                }
+                                </script>
+                        </select>
+                        <select id="tws" required aria-label="Scegli il valore di TWS">
+                            <option value="4">4 kt</option>
+                                <script>
+                                for (let i = 4.5; i <= 50; i += 0.5) {
+                                document.write(`<option value="${i}">${i} kt</option>`);
+                                }
+                                </script>
+                        </select>
+                    </div>
+                <label for="log">h2>LOG (kt) e Vele</label>
+                    <div class="flex-row">  
+						<select id="log" required aria-label="Scegli il valore di LOG">
+                            <option value="2">2 kt</option>
+                                <script>
+                                for (let i = 2.5; i <= 20; i += 0.5) {
+                                document.write(`<option value="${i}">${i} kt</option>`);
+                                }
+                                </script>
+                        </select>
+                        <select id="sails" aria-label="Seleziona la vela">
+                            <option value="MJ1">MJ1</option>
+                            <option value="MJ2">MJ2</option>
+                            <option value="MJ3">MJ3</option>
+                            <option value="MJ0">MJ0</option>
+                            <option value="MA1">MA1</option>
+                            <option value="MA2">MA2</option>
+                            <option value="MA3">MA3</option>
+                        </select>				
+                    </div>
+                <label for="waveHeight">Altezza (m) e Periodo (s) </label>
+                    <div class="flex-row">
+                        <select id="waveHeight" required aria-label="Scegli l'altezza dell'onda">
+                            <option value="0.25">0,25 m</option>
+								<script>
+                                for (let i = 0.5; i <= 4; i += 0.25) {
+                                document.write(`<option value="${i}">${i} m</option>`);
+                                }
+                                </script>
+                        </select>
+                        <select id="waveLength" required aria-label="Scegli la lunghezza dell'onda">
+                                <script>
+                                for (let i = 1; i <= 10; i++) {
+                                document.write(`<option value="${i}s">${i} s</option>`);
+                                }
+                                </script>
+                        </select>
+                    </div>
+                <label for="direction">Direzione° e Intensità (kt)</label>
+                    <div class="flex-row">
+                        <select id="direction" required aria-label="Scegli la direzione della corrente">
+                            <option value="0">0°</option>
+                                <script>
+                                for (let i = 10; i <= 180; i += 10) {
+                                document.write(`<option value="${i}">${i}°</option>`);
+                                }
+                                </script>
+                        </select>
+                        <select id="intensity" required aria-label="Scegli l'intensità della corrente">
+                            <option value="0">0 kt</option>
+                                <script>
+                                for (let i = 0.5; i <= 20; i += 0.5) {
+                                document.write(`<option value="${i}">${i} kt</option>`);
+                                }
+                                </script>
+                        </select>
+                    </div>
+            </form>        
+                    <div class="activities">
+		            <div class="activities-header">
+        <h2>Storico</h2>
+		            <div class="activities-actions">
+	    <button class="save-btn">💾 Salva Attività</button>
+        <button class="clearHistory">Pulisci Storico</button>
+		            </div>
+		            </div>
+		            <div id="timer" class="timer"> 
+	                <div id="lastActivity">Ultima attività:</div>
+		            <div class="warning-container">
+		            <div id="locationWarning" style="display: none; color: red; ">⚠️ GPS Impreciso (>100m)</div>
+                    </div>
+                    <div id="totalDistance">Distanza Totale: 0 M</div> 
+	                </div>
+        <table id="tasksTable">
+            <thead>
+                <tr>
+                    <th>Data e Ora</th>
+                    <th>GPS </th>
+                    <th>TWA </th>
+                    <th>TWS </th>
+                    <th>LOG</th>
+                    <th>Vele</th>
+                    <th>Onda </th>
+                    </tr>
+            </thead>
+                    <tbody></tbody>
+        </table>
+                    </div>
+		            <div id="map"></div>
+                        <script src="map.js"></script>
+                        <script src="storage.js"></script>
+                        <script src="storico.js"></script>
+                        <script src="bottoni.js"></script>
+
+        </body>
+</html>
+<!--roadmap / Grafici Polari / Community / Condivisione dati Meteo / Condivisione dati Velerie --> 

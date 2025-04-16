@@ -1,0 +1,225 @@
+        :root {
+            --navy: #001f3f;
+            --navy-light: #004080;
+            --text: #333;
+            --background: #f9f9f9;
+        }
+
+        * {
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            box-sizing: border-box;
+			border-radius: 10px;
+        }
+		
+		head {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+		
+        body {
+            background-color: var(--navy-light);
+			display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        select, input[type="text"], textarea {
+            width: 100%;
+	        padding: 8px;
+            font-size: 14px;
+        }
+		
+		footer {
+			padding-bottom: 20px;
+	    }
+		
+		form {
+		    background-color: #fafafa;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+		}
+		
+		.taskForm {
+            display: columns;
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .flex-row {
+            display: flex;
+            grid-column: span 2;
+        }
+
+        .flex-row select,
+        .flex-row input {
+            flex: 1;
+        }
+
+        .warning-container {
+            width: 50%;
+            display: flex;
+            justify-content: center;
+}
+		
+        .activities {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .activities-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+			margin-bottom: 20px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 10px;
+        }
+
+        .activities-header h2 {    
+			font-size: 1.8em;
+            margin: 0;
+            color: var(--navy);
+        }
+
+        .activities-actions button {
+            font-size: 0.9em;
+            padding: 8px 12px;
+			margin-left: 5px;
+			border: none;
+			background-color: var(--navy);
+			color: #fff;
+			cursor: pointer;
+			border-radius: 4px;
+			transition: background-color 0.3s ease;
+        }
+
+        .activities-actions button.save-btn:hover {
+                background-color: var(--navy-light);				
+				  }
+
+        .activities-actions button.clearHistory:hover {
+                background-color: #ff6347;				
+				  }
+        table#tasksTable {
+			width: 100%;
+			border-collapse: collapse;
+			margin-top: 20px;
+			font-size: 0.9em;
+        }
+
+        table#tasksTable th, 
+        table#tasksTable td {
+			padding: 12px 8px;
+			text-align: left;
+			border-bottom: 1px solid #ddd;
+        }
+
+        table#tasksTable th {
+			background-color: var(--navy);
+			color: #fff;
+        }
+
+        table#tasksTable tbody tr:nth-child(odd) {
+			background-color: #f4f4f4;
+			color: var(--navy-light)
+        }
+
+        table#tasksTable tbody tr:hover {
+			background-color: #eaeaea;
+        }
+
+        #map {
+			width: 50%;
+			height: 250px;
+			margin-top: 30px;
+			border-radius: 8px;
+			overflow: hidden;
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+			margin-bottom: 20px;
+        }
+
+        #timer {
+            display: flex;
+  			justify-content: space-between;
+			margin-top: 10px;
+			font-size: 0.95em; 
+			color: var(--navy-light);
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.5em;
+                text-align: center;
+            }
+
+            img.logo {
+                width: 80px;
+            }
+
+            a.link {
+                font-size: 1em;
+            }
+        }
+		
+        nav ul.menu {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+			padding-right: 40px;
+			background-color: #fafafa;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);			
+        }
+		
+        nav ul.menu li {
+            position: relative;
+            margin: 0 20px;
+        }
+		
+        nav ul.menu li a {
+            display: block;
+            color: var(--navy-light);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        nav ul.menu li a:hover {
+            color: #b3d4fc;
+	    }
+	
+    /* Dropdown: sottomenu che appare al passaggio del mouse */
+     nav ul.menu li ul.dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background-color: rgba(0, 31, 63, 0.95);
+      list-style: none;
+      padding: 10px 0;
+      min-width: 160px;
+      border-radius: 5px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      z-index: 1000;
+    }
+    /* Mostra il sottomenu al passaggio del mouse */
+     nav ul.menu li:hover ul.dropdown-menu {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+     nav ul.menu li ul.dropdown-menu li a {
+      padding: 10px 15px;
+      white-space: nowrap;
+      color: #fff;
+      text-decoration: none;
+      display: block;
+      transition: background-color 0.3s ease;
+    }
+     nav ul.menu li ul.dropdown-menu li a:hover {
+      background-color: rgba(0, 64, 128, 0.8);
+    }		
