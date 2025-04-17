@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Li6r3tt0.web</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
+      color: #1c1e21;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero-text {
+      max-width: 50%;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    .hero-text .buttons a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      margin-right: 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #2979ff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1565c0;
+    }
+
+    .btn-outline {
+      border: 2px solid #2979ff;
+      color: #2979ff;
+    }
+
+    .btn-outline:hover {
+      background-color: #e3f2fd;
+    }
+
+    .console {
+      background-color: #1e1e1e;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      width: 45%;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+
+    .console span {
+      color: #2979ff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="index.html" style="text-decoration: none; color: #1c1e21;">Li6r3tt0.web</a></div>
+    <nav>
+      <a href="software/software.html">Software</a>
+      <a href="docs/docs.html">Docs</a>
+      <a href="team/team.html">Team</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+     <a href="software/logbook/index.html" style="text-decoration: none; background-color: #f8f9fc; color: #2979ff;"><h1>LogBook</h1></a>
+      <p>Starting new Route</p>
+      <div class="buttons">
+        <a href="#" class="btn-primary">Downloads</a>
+        <a href="software/logbook/index.html" class="btn-outline">Start</a>
+      </div>
+    </div>
+    <div class="console">
+      <div><span>Li6r3tt0.web Software LogBook</span></div>
+      <div style="color: #00ff7f;">[08:23:33 UTC +2	CEST 07/03/2025]: Captain: Starting new route</div>
+      <div style="color: gray;"> Preparing LogBook... </div>
+      <div> Time elapsed: 1 s</span></div>
+      <div> Done!</span></div>
+	  <div style="color: #00ff7f;">[08:24:00 UTC +2	CEST 07/03/2025]: Captain: Save Activity </div>
+	  <div style="color: gray;">[08:24:01 UTC +2	CEST 07/03/2025]: LogBook Console storage</div>
+    </div>
+  </section>
+<script>
+  // 1. Seleziono la console e definisco le righe da stampare
+  const consoleEl = document.querySelector('.console');
+  const lines = [
+    'Li6r3tt0.web Software LogBook',
+    '[08:23:33 UTC +2 CEST 07/03/2025]: Captain: Starting new route',
+    'Preparing LogBook...',
+    'Time elapsed: 1 s',
+    'Done!',
+    '[08:24:00 UTC +2 CEST 07/03/2025]: Captain: Save Activity',
+    '[08:24:01 UTC +2 CEST 07/03/2025]: LogBook Console storage'
+  ];
+
+  // 2. Funzione che cancella la console e avvia la digitazione
+  function startTyping() {
+    consoleEl.innerHTML = '';      // svuoto la console
+    typeLine(0, 0);                // inizio da lines[0], char 0
+  }
+
+  // 3. Ricorsione per riga (li) e carattere (ci)
+  function typeLine(li, ci) {
+    if (li >= lines.length) return;          // fine di tutte le righe
+
+    const currentLine = lines[li];
+    // se non ho ancora finito i caratteri della riga:
+    if (ci < currentLine.length) {
+      // creo lo span o div se non c'è
+      let lineEl = consoleEl.children[li];
+      if (!lineEl) {
+        lineEl = document.createElement('div');
+        consoleEl.appendChild(lineEl);
+      }
+      // aggiungo un carattere
+      lineEl.textContent += currentLine.charAt(ci);
+      // scroll automatico in basso
+      consoleEl.scrollTop = consoleEl.scrollHeight;
+      // richiamo me stesso con un piccolo ritardo
+      setTimeout(() => typeLine(li, ci + 1), 37.5);
+    } else {
+      // riga terminata: piccolo ritardo, poi passo alla successiva
+      setTimeout(() => typeLine(li + 1, 0), 225);
+    }
+  }
+
+  // 4. Avvio al caricamento pagina
+  window.addEventListener('load', startTyping);
+</script>
+
+</body>
+</html>
