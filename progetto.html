@@ -41,13 +41,13 @@
 
     .hero {
       display: flex;
-      justify-content: center;
+      justify-content: space-between;
       align-items: flex-start;
       padding: 4rem 2rem;
     }
 
     .hero-text {
-      max-width: 800px;
+      max-width: 50%;
     }
 
     .hero-text h1 {
@@ -55,7 +55,7 @@
       margin-bottom: 1.5rem;
     }
 
-    .hero-text p {
+    .hero-text p, .hero-text ul {
       font-size: 1.1rem;
       margin-bottom: 1rem;
       color: #333;
@@ -70,6 +70,23 @@
 
     .hero-text ul li {
       margin-bottom: 0.5rem;
+    }
+
+    .console {
+      background-color: #1e1e1e;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      width: 45%;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      white-space: pre-wrap;
+    }
+
+    .console span {
+      color: #2979ff;
     }
   </style>
 </head>
@@ -86,9 +103,7 @@
   <section class="hero">
     <div class="hero-text">
       <h1>Progetto Tecnico</h1>
-      <p>
-        Questo sito ospita un progetto tecnico dedicato alla navigazione a vela. Il cuore del progetto è <strong>Logbook</strong>, un’applicazione web pensata per registrare, visualizzare e analizzare i dati raccolti in navigazione.
-      </p>
+      <p>Questo sito ospita un progetto tecnico dedicato alla navigazione a vela. Il cuore del progetto è <strong>Logbook</strong>, un’applicazione web pensata per registrare, visualizzare e analizzare i dati raccolti in navigazione.</p>
       <p>L’utente può inserire manualmente i dati principali della navigazione:</p>
       <ul>
         <li><strong>TWA</strong> (True Wind Angle) – angolo del vento reale</li>
@@ -97,14 +112,38 @@
         <li><strong>Vele</strong> – configurazione velica (randa e vele di prua)</li>
         <li><strong>Onda</strong> – altezza, periodo, direzione e intensità</li>
       </ul>
-      <p>
-        Ogni inserimento viene salvato e mostrato nella console storica, dove sono visibili anche posizione, data e ora.<br>
-        Una mappa interattiva mostra i marker relativi alle registrazioni: unendo i punti si ricostruisce la rotta percorsa, con calcolo della distanza navigata.
-      </p>
-      <p>
-        Il progetto è pensato per essere leggero, utilizzabile offline e indipendente da backend esterni.
-      </p>
+      <p>Ogni inserimento viene salvato e mostrato nella console storica, dove sono visibili anche posizione, data e ora. Una mappa interattiva mostra i marker relativi alle registrazioni: unendo i punti si ricostruisce la rotta percorsa, con calcolo della distanza navigata.</p>
+      <p>Il progetto è pensato per essere leggero, utilizzabile offline e indipendente da backend esterni.</p>
     </div>
+    <div class="console" id="console"></div>
   </section>
+
+  <script>
+    const text = `
+[INFO] Questo sito ospita un progetto tecnico dedicato alla navigazione a vela.
+[INFO] Il cuore del progetto è Logbook, un'applicazione web per registrare e analizzare i dati raccolti.
+[INPUT] TWA – angolo del vento reale
+[INPUT] TWS – intensità del vento reale
+[INPUT] LOG – velocità letta dal solcometro
+[INPUT] Vele – configurazione velica
+[INPUT] Onda – altezza, periodo, direzione, intensità
+[STORAGE] Dati salvati nella console storica con posizione, data e ora.
+[MAP] Rotta ricostruita su mappa interattiva con calcolo distanza.
+[STATUS] Progetto leggero, offline, senza backend esterni.
+    `;
+
+    const consoleEl = document.getElementById('console');
+    let index = 0;
+
+    function typeText() {
+      if (index < text.length) {
+        consoleEl.textContent += text.charAt(index);
+        index++;
+        setTimeout(typeText, 15); // velocità di scrittura
+      }
+    }
+
+    window.onload = typeText;
+  </script>
 </body>
 </html>
