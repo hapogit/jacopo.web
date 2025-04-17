@@ -1,67 +1,110 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-  <meta charset="UTF-8">
-  <title>Li6r3tt0 Progetto</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <title>Li6r3tt0.web</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      background-color: #000;
-      color: #0f0;
-      font-family: monospace;
-      padding: 2em;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
+      color: #1c1e21;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 4rem 2rem;
+    }
+
+    .hero-text {
+      max-width: 800px;
+    }
+
+    .hero-text h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-text p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+      color: #333;
       line-height: 1.6;
     }
-    h1 {
-      color: #0f0;
-      border-bottom: 1px solid #0f0;
-      padding-bottom: 0.2em;
-      margin-bottom: 1em;
+
+    .hero-text ul {
+      list-style-type: disc;
+      padding-left: 1.5rem;
+      margin-bottom: 1.5rem;
     }
-    .cmd::before {
-      content: "$ ";
-      color: #0f0;
-    }
-    a {
-      color: #0f0;
-      text-decoration: underline;
-    }
-    .section {
-      margin-bottom: 2em;
+
+    .hero-text ul li {
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <h1>Progetto Logbook</h1>
+  <header>
+    <div class="logo"><a href="index.html" style="text-decoration: none; color: #1c1e21;">Li6r3tt0.web</a></div>
+    <nav>
+      <a href="software/software.html">Software</a>
+      <a href="docs/docs.html">Docs</a>
+      <a href="team/team.html">Team</a>
+    </nav>
+  </header>
 
-  <div class="section">
-    <p class="cmd">cat descrizione.txt</p>
-    <p>
-      Questo sito ospita un <strong>progetto tecnico dedicato alla navigazione a vela</strong>.
-      Il cuore del progetto è <strong>Logbook</strong>, un’applicazione web pensata per registrare,
-      visualizzare e analizzare i dati raccolti in navigazione.
-    </p>
-
-    <p>L’utente può inserire manualmente i seguenti dati:</p>
-    <ul>
-      <li><strong>TWA (True Wind Angle)</strong> – angolo del vento reale</li>
-      <li><strong>TWS (True Wind Speed)</strong> – intensità del vento reale</li>
-      <li><strong>LOG</strong> – velocità letta dal solcometro</li>
-      <li><strong>Vele</strong> – configurazione velica (randa e vele di prua)</li>
-      <li><strong>Onda</strong> – altezza, periodo, direzione e intensità</li>
-    </ul>
-
-    <p>
-      Ogni inserimento viene salvato e mostrato nella <strong>console storica</strong>, dove sono visibili anche
-      <strong>posizione, data e ora</strong>. Una <strong>mappa interattiva</strong> mostra i marker relativi alle registrazioni:
-      unendo i punti si ricostruisce la <strong>rotta percorsa</strong>, con calcolo della distanza navigata.
-    </p>
-
-    <p>
-      Il progetto è pensato per essere <strong>leggero</strong>, <strong>utilizzabile offline</strong> e
-      <strong>indipendente da backend esterni</strong>.
-    </p>
-  </div>
-
-  <p class="cmd">exit</p>
+  <section class="hero">
+    <div class="hero-text">
+      <h1>Progetto Tecnico</h1>
+      <p>
+        Questo sito ospita un progetto tecnico dedicato alla navigazione a vela. Il cuore del progetto è <strong>Logbook</strong>, un’applicazione web pensata per registrare, visualizzare e analizzare i dati raccolti in navigazione.
+      </p>
+      <p>L’utente può inserire manualmente i dati principali della navigazione:</p>
+      <ul>
+        <li><strong>TWA</strong> (True Wind Angle) – angolo del vento reale</li>
+        <li><strong>TWS</strong> (True Wind Speed) – intensità del vento reale</li>
+        <li><strong>LOG</strong> – velocità letta dal solcometro</li>
+        <li><strong>Vele</strong> – configurazione velica (randa e vele di prua)</li>
+        <li><strong>Onda</strong> – altezza, periodo, direzione e intensità</li>
+      </ul>
+      <p>
+        Ogni inserimento viene salvato e mostrato nella console storica, dove sono visibili anche posizione, data e ora.<br>
+        Una mappa interattiva mostra i marker relativi alle registrazioni: unendo i punti si ricostruisce la rotta percorsa, con calcolo della distanza navigata.
+      </p>
+      <p>
+        Il progetto è pensato per essere leggero, utilizzabile offline e indipendente da backend esterni.
+      </p>
+    </div>
+  </section>
 </body>
 </html>
