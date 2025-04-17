@@ -40,14 +40,16 @@
     }
 
     .hero {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      padding: 4rem 2rem;
-    }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 4rem 2rem;
+  gap: 2rem;
+}
 
-    .hero-text {
-      max-width: 50%;
+.hero-text {
+  max-width: 800px;
+  width: 100%;
     }
 
     .hero-text h1 {
@@ -73,17 +75,18 @@
     }
 
     .console {
-      background-color: #1e1e1e;
-      color: white;
-      padding: 1rem;
-      border-radius: 8px;
-      font-family: monospace;
-      width: 100%;
-      height: 300px;
-      overflow-y: auto;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
-      white-space: pre-wrap;
-    }
+  background-color: #1e1e1e;
+  color: white;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  width: 100%;
+  max-width: 800px;
+  height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  white-space: pre-wrap;
+}
 
     .console span {
       color: #2979ff;
