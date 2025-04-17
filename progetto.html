@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <title>Li6r3tt0 Progetto</title>
+  <style>
+    body {
+      background-color: #000;
+      color: #0f0;
+      font-family: monospace;
+      padding: 2em;
+      line-height: 1.6;
+    }
+    h1 {
+      color: #0f0;
+      border-bottom: 1px solid #0f0;
+      padding-bottom: 0.2em;
+      margin-bottom: 1em;
+    }
+    .cmd::before {
+      content: "$ ";
+      color: #0f0;
+    }
+    a {
+      color: #0f0;
+      text-decoration: underline;
+    }
+    .section {
+      margin-bottom: 2em;
+    }
+  </style>
+</head>
+<body>
+  <h1>Progetto Logbook</h1>
+
+  <div class="section">
+    <p class="cmd">cat descrizione.txt</p>
+    <p>
+      Questo sito ospita un <strong>progetto tecnico dedicato alla navigazione a vela</strong>.
+      Il cuore del progetto è <strong>Logbook</strong>, un’applicazione web pensata per registrare,
+      visualizzare e analizzare i dati raccolti in navigazione.
+    </p>
+
+    <p>L’utente può inserire manualmente i seguenti dati:</p>
+    <ul>
+      <li><strong>TWA (True Wind Angle)</strong> – angolo del vento reale</li>
+      <li><strong>TWS (True Wind Speed)</strong> – intensità del vento reale</li>
+      <li><strong>LOG</strong> – velocità letta dal solcometro</li>
+      <li><strong>Vele</strong> – configurazione velica (randa e vele di prua)</li>
+      <li><strong>Onda</strong> – altezza, periodo, direzione e intensità</li>
+    </ul>
+
+    <p>
+      Ogni inserimento viene salvato e mostrato nella <strong>console storica</strong>, dove sono visibili anche
+      <strong>posizione, data e ora</strong>. Una <strong>mappa interattiva</strong> mostra i marker relativi alle registrazioni:
+      unendo i punti si ricostruisce la <strong>rotta percorsa</strong>, con calcolo della distanza navigata.
+    </p>
+
+    <p>
+      Il progetto è pensato per essere <strong>leggero</strong>, <strong>utilizzabile offline</strong> e
+      <strong>indipendente da backend esterni</strong>.
+    </p>
+  </div>
+
+  <p class="cmd">exit</p>
+</body>
+</html>
