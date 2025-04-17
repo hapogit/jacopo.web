@@ -78,7 +78,7 @@
       padding: 1rem;
       border-radius: 8px;
       font-family: monospace;
-      width: 50%;
+      width: 100%;
       height: 300px;
       overflow-y: auto;
       box-shadow: 0 5px 20px rgba(0,0,0,0.15);
@@ -128,7 +128,7 @@
       if (index < text.length) {
         consoleEl.textContent += text.charAt(index);
         index++;
-        setTimeout(typeText, 200); // velocità di scrittura
+        setTimeout(typeText, 100); // velocità di scrittura
       }
     }
 
