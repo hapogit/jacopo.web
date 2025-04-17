@@ -108,9 +108,9 @@
       <h1>Progect</h1>
 
     </div>
-    <center><div class="console" id="console"></div></center>
+    <center><div class="console" id="console" style="color: #2979ff;"></div></center>
   </section>
-  <script style="color: #2979ff;">
+  <script>
     const text = `
 [INFO] Questo sito ospita un progetto tecnico dedicato alla navigazione a vela.
 [INFO] Il cuore del progetto è Logbook, un'applicazione web per registrare e analizzare i dati raccolti.
@@ -131,7 +131,7 @@
       if (index < text.length) {
         consoleEl.textContent += text.charAt(index);
         index++;
-        setTimeout(typeText, 75); // velocità di scrittura
+        setTimeout(typeText, 50); // velocità di scrittura
       }
     }
 
