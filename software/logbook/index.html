@@ -380,7 +380,7 @@
           const logSelect = document.getElementById('log');
           if (logSelect) {
             let rounded = Math.round(speedKt * 0.10) / 0.10;
-            rounded = Math.min(Math.max(rounded, 20), 20);
+            rounded = Math.min(Math.max(rounded, 0.10), 20);
             logSelect.value = rounded;
           }
 
