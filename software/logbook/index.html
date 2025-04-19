@@ -317,68 +317,82 @@
                 <script src="map.js"></script>
                 <script src="storage.js"></script>
                 <script src="storico.js"></script>
-				
-				<script>
-// Funzione per distanza in metri (haversine)
-function computeDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371000; // raggio Terra in m
-  const toRad = x => x * Math.PI / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLon = toRad(lon2 - lon1);
-  const a = Math.sin(dLat/2)**2 +
-            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-            Math.sin(dLon/2)**2;
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-}
+				    <script>
+      // Funzione per distanza in metri (haversine)
+      function computeDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371000; // raggio Terra in m
+        const toRad = x => x * Math.PI / 180;
+        const dLat = toRad(lat2 - lat1);
+        const dLon = toRad(lon2 - lon1);
+        const a = Math.sin(dLat/2)**2 +
+                  Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+                  Math.sin(dLon/2)**2;
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        return R * c;
+      }
 
-let prev = null;
+      let prev = null;
 
-// Avvia watchPosition
-if ('geolocation' in navigator) {
-  navigator.geolocation.watchPosition(pos => {
-    let speedMs;
+      // Funzione di smoothing (media mobile semplice)
+      let history = [];
+      function smooth(lat, lon) {
+        history.push({lat, lon});
+        if (history.length > 5) history.shift();
+        const avgLat = history.reduce((s, p) => s + p.lat, 0) / history.length;
+        const avgLon = history.reduce((s, p) => s + p.lon, 0) / history.length;
+        return {latitude: avgLat, longitude: avgLon};
+      }
 
-    // se GPS restituisce speed la usiamo, altrimenti calcoliamo
-    if (pos.coords.speed != null) {
-      speedMs = pos.coords.speed;
-    } else if (prev) {
-      const dt = (pos.timestamp - prev.timestamp) / 1000;
-      const dist = computeDistance(
-        prev.latitude, prev.longitude,
-        pos.coords.latitude, pos.coords.longitude
-      );
-      speedMs = dist / dt;
-    } else {
-      speedMs = 0;
-    }
+      // Avvia watchPosition
+      if ('geolocation' in navigator) {
+        navigator.geolocation.watchPosition(pos => {
+          // 1) Prendi la posizione grezza
+          const rawLat = pos.coords.latitude;
+          const rawLon = pos.coords.longitude;
 
-    // conserva ultima posizione
-    prev = {
-      latitude: pos.coords.latitude,
-      longitude: pos.coords.longitude,
-      timestamp: pos.timestamp
-    };
+          // 2) Applica il filtro smoothing
+          const { latitude, longitude } = smooth(rawLat, rawLon);
 
-    // m/s → nodi (1 m/s = 1.94384 kt)
-    const speedKt = (speedMs * 1.94384) || 0;
-    document.getElementById('speedBanner').textContent =
-      `Velocità: ${speedKt.toFixed(2)} kt`;
-  }, err => {
-    console.warn('Errore geolocalizzazione:', err.message);
-    document.getElementById('speedBanner').textContent =
-      'Velocità: – (GPS non disponibile)';
-  }, {
-    enableHighAccuracy: true,
-    maximumAge: 0,
-    timeout: 5000
-  });
-} else {
-  document.getElementById('speedBanner').textContent =
-    'Velocità: – (Geolocation non supportata)';
-}
-</script>
+          // 3) Calcolo della velocità
+          let speedMs;
+          if (pos.coords.speed != null) {
+            speedMs = pos.coords.speed;
+          } else if (prev) {
+            const dt = (pos.timestamp - prev.timestamp) / 1000;
+            const dist = computeDistance(
+              prev.latitude, prev.longitude,
+              latitude, longitude
+            );
+            speedMs = dist / dt;
+          } else {
+            speedMs = 0;
+          }
 
-				
+          // 4) Aggiorna prev con valori filtrati
+          prev = { latitude, longitude, timestamp: pos.timestamp };
+
+          // m/s → nodi (1 m/s = 1.94384 kt)
+          const speedKt = (speedMs * 1.94384) || 0;
+          document.getElementById('speedBanner').textContent =
+            `Velocità: ${speedKt.toFixed(2)} kt`;
+
+          // 5) Usa latitude e longitude filtrati per mappa e salvataggio
+          // updateMap(latitude, longitude);
+          // saveActivity({ latitude, longitude, ... });
+
+        }, err => {
+          console.warn('Errore geolocalizzazione:', err.message);
+          document.getElementById('speedBanner').textContent =
+            'Velocità: – (GPS non disponibile)';
+        }, {
+          enableHighAccuracy: true,
+          maximumAge: 0,
+          timeout: 5000
+        });
+      } else {
+        document.getElementById('speedBanner').textContent =
+          'Velocità: – (Geolocation non supportata)';
+      }
+    </script>		
 		</footer>
     </html>
