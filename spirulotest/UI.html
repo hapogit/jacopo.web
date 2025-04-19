@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+		<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+            <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>		
+			
+			<script src="https://cdn.jsdelivr.net/npm/raphael@2.3.0/raphael.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/justgage@1.4.0/justgage.min.js"></script>
+  <title>LogBook</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
+      color: #1c1e21;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+    }
+
+    .hero-text {
+      max-width: 50%;
+    }
+
+    .hero-text h1 {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+      font-size: 1.2rem;
+      margin-bottom: 2rem;
+      color: #555;
+    }
+
+    .hero-text .buttons a {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      margin-right: 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: background 0.2s;
+    }
+
+    .btn-primary {
+      background-color: #2979ff;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1565c0;
+    }
+
+    .btn-outline {
+      border: 2px solid #2979ff;
+      color: #2979ff;
+    }
+
+    .btn-outline:hover {
+      background-color: #e3f2fd;
+    }
+
+    .console {
+      background-color: #1e1e1e;
+      color: white;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      width: 70%;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      transform: translateY(-100%);
+      opacity: 0;
+      animation: slideDown 1.2s ease 0.3s forwards;
+    }
+	
+	@keyframes slideDown {
+    0% {
+    transform: translateY(-100%);
+    opacity: 0;
+    }
+    100% {
+    transform: translateY(0);
+    opacity: 1;
+    }
+    }
+
+    .console span {
+      color: gray;
+    }
+	
+	#map {
+	 width: 95%;
+	 height: 300px;
+	 border-radius: 8px;
+	 overflow: hidden;
+	 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	}
+	 
+	.save-btn {
+	  background-color: #2979ff;
+      color: white;
+	}
+	
+	.save-btn:hover {
+      background-color: #1565c0;
+    }
+
+    .clearHistory {
+      border: 2px solid #2979ff;
+      color: #2979ff;
+    }   
+
+    .clearHistory:hover {
+      background-color: #e3f2fd;
+    }   	
+	
+	select {
+	  border-radius: 8px;
+	{
+	
+	.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(160px,1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background: #0d1b2a;        /* sfondo scuro “strumenti” */
+  border-radius: 8px;
+}
+.gauge-card {
+  background: #1b263b;
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+}
+.gauge {
+  width: 100%;
+  height: 120px;
+}
+input[type="range"] {
+  width: 80%;
+  margin: 0.5rem 0;
+}
+.gauge-label {
+  color: #a9cfe7;
+  font-size: 0.9rem;
+}
+.save-btn, .clearHistory {
+  margin: 1rem 0.5rem 0;
+}
+
+
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="logo"><a href="../../index.html" style="text-decoration: none; color: #1c1e21;">Li6r3tt0.web</a></div>
+    <nav>
+      <a href="../software.html">Software</a>
+      <a href="../docs/docs.html">Docs</a>
+      <a href="../team/team.html">Team</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-text">
+           <div id="dashboard" class="dashboard-grid">
+  <!-- TWA -->
+  <div class="gauge-card">
+    <div id="twaGauge" class="gauge"></div>
+    <input type="range" id="twaInput" min="0" max="180" value="40">
+    <div class="gauge-label">TWA°</div>
+  </div>
+  <!-- TWS -->
+  <div class="gauge-card">
+    <div id="twsGauge" class="gauge"></div>
+    <input type="range" id="twsInput" min="0" max="50" step="0.5" value="4">
+    <div class="gauge-label">TWS (kt)</div>
+  </div>
+  <!-- LOG -->
+  <div class="gauge-card">
+    <div id="logGauge" class="gauge"></div>
+    <input type="range" id="logInput" min="0" max="20" step="0.5" value="2">
+    <div class="gauge-label">LOG (kt)</div>
+  </div>
+  <!-- Intensità/Corrente -->
+  <div class="gauge-card">
+    <div id="currGauge" class="gauge"></div>
+    <input type="range" id="currInput" min="0" max="20" step="0.5" value="0">
+    <div class="gauge-label">Corrente (kt)</div>
+  </div>
+			<div class="buttons">
+		            <div class="activities-actions">
+	    <a href="#" class="save-btn" style="margin-top: 1rem;">Salva Rilevamento</a>
+        <a href="#" class="clearHistory"style="margin-top: 1rem;">Pulisci Storico</a>
+		<script>
+		document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+    startTimer();
+    initMap();
+
+    // Pulisci cronologia
+    const clearHistoryBtn = document.querySelector('.clearHistory');
+    if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', clearAllData);
+
+    // Pulsante Salva
+    const saveBtn = document.querySelector('.save-btn');
+    if (saveBtn) saveBtn.addEventListener('click', saveActivity);
+});
+</script>
+		            </div>	
+            </div>					
+    </div>
+    <div class="console">
+                    <div class="activities">
+		            <div class="activities-header">
+        <span>Console: LogBook...</span> <ul class="warning-container"> <center><ul id="locationWarning" style="display: none; color: red; ">⚠️ GPS Impreciso (>50m)</ul></ul></center>
+
+		            </div>
+		            <div id="timer" class="timer"> 
+	                <div id="lastActivity">Ultima attività:</div>
+                    <div id="totalDistance">Distanza Totale: 0 M</div> 
+	                </div>
+        <table id="tasksTable">
+            <thead>
+                <tr>
+                    <th>Data e Ora</th>
+                    <th>GPS</th>
+                    <th>TWA</th>
+                    <th>TWS</th>
+                    <th>LOG</th>
+                    <th>Vele</th>
+                    <th>Onda</th>
+                    </tr>
+            </thead>
+                    <tbody></tbody>
+        </table>
+                    </div>
+    </div>
+
+  </section>
+</body>
+        <footer>
+	<center><div id="map" style="margin-bottom: 1rem;"></div></center>  	
+                <script src="map.js"></script>
+                <script src="storage.js"></script>
+                <script src="storico.js"></script>
+		</footer>
+    </html>
