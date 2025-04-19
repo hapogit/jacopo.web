@@ -206,9 +206,9 @@
                 <label for="log">LOG (kt) e Vele</label>
                     <div class="flex-row">  
 						<select id="log" required aria-label="Scegli il valore di LOG">
-                            <option value="2">2kt</option>
+                            <option value="0">0kt</option>
                                 <script>
-                                for (let i = 2.5; i <= 20; i += 0.5) {
+                                for (let i = 0.5; i <= 20; i += 0.1) {
                                 document.write(`<option value="${i}">${i}kt</option>`);
                                 }
                                 </script>
@@ -375,6 +375,14 @@
           const speedKt = (speedMs * 1.94384) || 0;
           document.getElementById('speedBanner').textContent =
             `Velocità: ${speedKt.toFixed(2)} kt`;
+			
+		  // **NOVITÀ:** aggiorna automaticamente il campo LOG
+          const logSelect = document.getElementById('log');
+          if (logSelect) {
+            let rounded = Math.round(speedKt * 0.5) / 0.5;
+            rounded = Math.min(Math.max(rounded, 2), 20);
+            logSelect.value = rounded;
+          }
 
           // 5) Usa latitude e longitude filtrati per mappa e salvataggio
           // updateMap(latitude, longitude);
