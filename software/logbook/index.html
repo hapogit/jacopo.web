@@ -97,7 +97,7 @@
       padding: 1rem;
       border-radius: 8px;
       font-family: monospace;
-      width: 100%;
+      width: 70%;
       height: 300px;
       overflow-y: auto;
       box-shadow: 0 5px 20px rgba(0,0,0,0.15);
@@ -157,18 +157,43 @@
 
   <header>
     <div class="logo"><a href="../../index.html" style="text-decoration: none; color: #1c1e21;">Li6r3tt0.web</a></div>
+	
     <nav>
       <a href="../software.html">Software</a>
       <a href="../docs/docs.html">Docs</a>
       <a href="../team/team.html">Team</a>
     </nav>
+			<div id="speedBanner" style="
+    position: center;
+    top: 0;
+    left: 0;
+    width: 50%;
+    padding: 0.5rem;
+    background: rgba(0,123,255,0.9);
+    color: white;
+    font-weight: bold;
+    text-align: center;
+    z-index: 999;
+	border-radius: 8px;
+">
+  Velocità: –.– kt
+</div>
+	
   </header>
 
   <section class="hero">
     <div class="hero-text">
             <form id="taskForm" method="post" action="#" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border-radius: 8px; padding: 1rem; width: 60%; background-color: #2979ff; transform: translateY(-100%); opacity: 0; animation: slideDown 1.2s ease 0.3s forwards;">
-                <label for="twa">TWA° e TWS (kt)</label>
+                <label for="twa">TWS (kt) e TWA°</label>
                     <div class="flex-row">
+                        <select id="tws" required aria-label="Scegli il valore di TWS">
+                            <option value="4">4kt</option>
+                                <script>
+                                for (let i = 4.5; i <= 50; i += 0.5) {
+                                document.write(`<option value="${i}">${i}kt</option>`);
+                                }
+                                </script>
+                        </select>
                         <select id="twa" required aria-label="Scegli il valore di TWA">
                             <option value="40">40°</option>
                                 <script>
@@ -177,22 +202,14 @@
                                 }
                                 </script>
                         </select>
-                        <select id="tws" required aria-label="Scegli il valore di TWS">
-                            <option value="4">4 kt</option>
-                                <script>
-                                for (let i = 4.5; i <= 50; i += 0.5) {
-                                document.write(`<option value="${i}">${i} kt</option>`);
-                                }
-                                </script>
-                        </select>
                     </div>
                 <label for="log">LOG (kt) e Vele</label>
                     <div class="flex-row">  
 						<select id="log" required aria-label="Scegli il valore di LOG">
-                            <option value="2">2 kt</option>
+                            <option value="2">2kt</option>
                                 <script>
                                 for (let i = 2.5; i <= 20; i += 0.5) {
-                                document.write(`<option value="${i}">${i} kt</option>`);
+                                document.write(`<option value="${i}">${i}kt</option>`);
                                 }
                                 </script>
                         </select>
@@ -209,17 +226,17 @@
                 <label for="waveHeight">Altezza (m) e Periodo (s) </label>
                     <div class="flex-row">
                         <select id="waveHeight" required aria-label="Scegli l'altezza dell'onda">
-                            <option value="0.25">0,25 m</option>
+                            <option value="0.25">0,25m</option>
 								<script>
                                 for (let i = 0.5; i <= 4; i += 0.25) {
-                                document.write(`<option value="${i}">${i} m</option>`);
+                                document.write(`<option value="${i}">${i}m</option>`);
                                 }
                                 </script>
                         </select>
                         <select id="waveLength" required aria-label="Scegli la lunghezza dell'onda">
                                 <script>
                                 for (let i = 1; i <= 10; i++) {
-                                document.write(`<option value="${i}s">${i} s</option>`);
+                                document.write(`<option value="${i}s">${i}s</option>`);
                                 }
                                 </script>
                         </select>
@@ -235,10 +252,10 @@
                                 </script>
                         </select>
                         <select id="intensity" required aria-label="Scegli l'intensità della corrente">
-                            <option value="0">0 kt</option>
+                            <option value="0">0kt</option>
                                 <script>
                                 for (let i = 0.5; i <= 20; i += 0.5) {
-                                document.write(`<option value="${i}">${i} kt</option>`);
+                                document.write(`<option value="${i}">${i}kt</option>`);
                                 }
                                 </script>
                         </select>
@@ -246,7 +263,7 @@
             </form>
 			<div class="buttons">
 		            <div class="activities-actions">
-	    <a href="#" class="save-btn" style="margin-top: 1rem;">Salva Attività</a>
+	    <a href="#" class="save-btn" style="margin-top: 1rem;">Salva Rilevamento</a>
         <a href="#" class="clearHistory"style="margin-top: 1rem;">Pulisci Storico</a>
 		<script>
 		document.addEventListener('DOMContentLoaded', () => {
@@ -269,7 +286,7 @@
     <div class="console">
                     <div class="activities">
 		            <div class="activities-header">
-        <span>Console: LogBook...</span> <ul class="warning-container"> <center><ul id="locationWarning" style="display: none; color: red; ">⚠️ GPS Impreciso (>100m)</ul></ul></center>
+        <span>Console: LogBook...</span> <ul class="warning-container"> <center><ul id="locationWarning" style="display: none; color: red; ">⚠️ GPS Impreciso (>50m)</ul></ul></center>
 
 		            </div>
 		            <div id="timer" class="timer"> 
@@ -281,8 +298,8 @@
                 <tr>
                     <th>Data e Ora</th>
                     <th>GPS</th>
-                    <th>TWA</th>
                     <th>TWS</th>
+                    <th>TWA</th>
                     <th>LOG</th>
                     <th>Vele</th>
                     <th>Onda</th>
@@ -300,5 +317,68 @@
                 <script src="map.js"></script>
                 <script src="storage.js"></script>
                 <script src="storico.js"></script>
+				
+				<script>
+// Funzione per distanza in metri (haversine)
+function computeDistance(lat1, lon1, lat2, lon2) {
+  const R = 6371000; // raggio Terra in m
+  const toRad = x => x * Math.PI / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a = Math.sin(dLat/2)**2 +
+            Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+            Math.sin(dLon/2)**2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+}
+
+let prev = null;
+
+// Avvia watchPosition
+if ('geolocation' in navigator) {
+  navigator.geolocation.watchPosition(pos => {
+    let speedMs;
+
+    // se GPS restituisce speed la usiamo, altrimenti calcoliamo
+    if (pos.coords.speed != null) {
+      speedMs = pos.coords.speed;
+    } else if (prev) {
+      const dt = (pos.timestamp - prev.timestamp) / 1000;
+      const dist = computeDistance(
+        prev.latitude, prev.longitude,
+        pos.coords.latitude, pos.coords.longitude
+      );
+      speedMs = dist / dt;
+    } else {
+      speedMs = 0;
+    }
+
+    // conserva ultima posizione
+    prev = {
+      latitude: pos.coords.latitude,
+      longitude: pos.coords.longitude,
+      timestamp: pos.timestamp
+    };
+
+    // m/s → nodi (1 m/s = 1.94384 kt)
+    const speedKt = (speedMs * 1.94384) || 0;
+    document.getElementById('speedBanner').textContent =
+      `Velocità: ${speedKt.toFixed(2)} kt`;
+  }, err => {
+    console.warn('Errore geolocalizzazione:', err.message);
+    document.getElementById('speedBanner').textContent =
+      'Velocità: – (GPS non disponibile)';
+  }, {
+    enableHighAccuracy: true,
+    maximumAge: 500,
+    timeout: 5000
+  });
+} else {
+  document.getElementById('speedBanner').textContent =
+    'Velocità: – (Geolocation non supportata)';
+}
+</script>
+
+				
 		</footer>
     </html>
