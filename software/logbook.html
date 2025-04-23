@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="favicon.ico" type="image/x-icon">
+		   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+       <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>		
+  <title>LogBook</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 2rem;
+      background-color: #b7d6e0;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+      border-radius: 8px;
+    }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f8f9fc;
+      color: #1c1e21;
+    }
+    .logo {
+      font-weight: bold;
+      font-size: 1.5rem;
+    }
+    nav a {
+      margin-left: 20px;
+      text-decoration: none;
+      color: #555;
+      font-weight: 500;
+    }
+    .hero {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 4rem 2rem;
+    }
+    .hero-text {
+      max-width: 50%;
+    }
+    form {
+      width: 100%;
+      padding: 1rem;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      border-radius: 8px;
+      background-color: #abd2df;
+    }
+    select {
+      border-radius: 8px;
+    }
+    button {
+      display: inline-block;
+      border-radius: 8px;
+      padding: 1rem;
+      font-weight: bold;
+      margin-top: 1rem;
+      color: #555;
+      border: 2px solid #abd2df;
+      background-color: #abd2df;
+    }
+    button:hover {
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+      background-color: #9bbfcb;
+      border: 2px solid #9bbfcb;
+    }
+    .console {
+      background-color: #abd2df;
+      color: black;
+      padding: 1rem;
+      border-radius: 8px;
+      font-family: monospace;
+      width: 50%;
+      height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+    }
+    #map {
+	    width: 95%;
+	    height: 300px;
+	    border-radius: 8px;
+	    overflow: hidden;
+	    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin: 30px;
+      margin-bottom: 1rem;
+	  }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="../index.html" style="text-decoration: none; color: #555;">Li8r3tt0</a></div>
+    <nav>
+      <a href="#">Software</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="hero-text">
+      <form id="taskForm">
+        <div class="form-group">
+          <label for="tws">(True Wind Speed)</label>
+          <select id="tws" required aria-describedby="twsHelp">
+            <option value="">TWS...</option>
+            <script>
+              for (let i = 2; i <= 30; i += 0.5) {
+                document.write(`<option value="${i}">${i} kt</option>`);
+              }
+            </script>
+          </select>
+        </div>     
+        <div class="form-group">
+          <label for="twa">(True Wind Angle)</label>
+          <select id="twa" required aria-describedby="twaHelp">
+            <option value="">TWA...</option>
+            <script>
+              for (let i = 40; i <= 180; i++) {
+                document.write(`<option value="${i}">${i}°</option>`);
+              }
+            </script>
+          </select>
+        </div>     
+        <div class="form-group">
+          <label for="log">(Velocità Barca)</label>
+          <select id="log" required aria-describedby="logHelp">
+            <option value="">LOG...</option>
+            <script>
+              for (let i = 0; i <= 20; i++) {
+                document.write(`<option value="${i}">${i} kt</option>`);
+              }
+            </script>
+          </select>
+        </div>      
+        <div class="form-group">
+          <label for="sails">(Vele)</label>
+          <select id="sails" required>
+            <option value="">Vele...</option>
+            <option value="MJ1">MJ1</option>
+            <option value="MJ2">MJ2</option>
+            <option value="MJ3">MJ3</option>
+            <option value="MJ0">MJ0</option>
+            <option value="MA1">MA1</option>
+            <option value="MA2">MA2</option>
+            <option value="MA3">MA3</option>
+          </select>
+        </div>
+        <button class="save-btn">SALVA RILEVAMENTO</button>
+        <button class="clearHistory">PULISCI STORICO</button>
+      </form>      
+		<script>
+		document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+    startTimer();
+    initMap();
+    // Pulisci cronologia
+    const clearHistoryBtn = document.querySelector('.clearHistory');
+    if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', clearAllData);
+    // Pulsante Salva
+    const saveBtn = document.querySelector('.save-btn');
+    if (saveBtn) saveBtn.addEventListener('click', saveActivity);
+});
+</script>
+		            </div>	
+            </div>					
+    </div>
+    <div class="console">
+                <ul class="warning-container"><ul id="locationWarning" style="display: none; color: red;">⚠️ GPS Impreciso (>50m)</ul></ul>
+		            <div id="timer" class="timer"> 
+	              <div id="lastActivity">Ultima attività:</div>
+                <div id="totalDistance">Distanza Totale: 0 M</div> 
+	              </div>
+        <table id="tasksTable">
+            <thead>
+                    <tr>
+                    <th>Data e Ora /</th>
+                    <th>GPS /</th>
+                    <th>TWS /</th>
+                    <th>TWA /</th>
+                    <th>LOG </th>
+                    </tr>
+            </thead>
+                    <tbody>
+                    </tbody>
+        </table>
+                    </div>
+    </div>
+  </section>
+</body>
+        <footer>
+	              <div id="map" ></div>
+                <script src="map.js"></script>
+                <script src="storage.js"></script>
+                <script src="storico.js"></script>
+		</footer>
+    </html>
