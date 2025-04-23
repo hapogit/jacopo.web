@@ -12,7 +12,7 @@ function loadTasks() {
             row.insertCell(1).textContent = task.location || '—';
             row.insertCell(2).textContent = `${task.tws}kt`;
             row.insertCell(3).textContent = `${task.twa}°`;
-            row.insertCell(4).textContent = `${task.log}kt`;
+            row.insertCell(4).textContent = task.log;
             row.insertCell(5).textContent = task.sails;
         });
 

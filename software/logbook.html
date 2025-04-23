@@ -100,6 +100,10 @@
   </header>
   <section class="hero">
     <div class="hero-text">
+      <div class="form-group" style="padding: 1rem; margin-bottom: 1rem; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border-radius: 8px; background-color: #abd2df;">
+        <label for="logDisplay" style="border-radius: 8px;">(Log)</label>
+        <input type="text" id="logDisplay" style="border-radius: 8px;  border: 1px solid #abd2df;" readonly value="-" /> 
+      </div>
       <form id="taskForm">
         <div class="form-group">
           <label for="tws">(True Wind Speed)</label>
@@ -122,18 +126,7 @@
               }
             </script>
           </select>
-        </div>     
-        <div class="form-group">
-          <label for="log">(Velocità Barca)</label>
-          <select id="log" required aria-describedby="logHelp">
-            <option value="">LOG...</option>
-            <script>
-              for (let i = 0; i <= 20; i++) {
-                document.write(`<option value="${i}">${i} kt</option>`);
-              }
-            </script>
-          </select>
-        </div>      
+        </div>           
         <div class="form-group">
           <label for="sails">(Vele)</label>
           <select id="sails" required>
@@ -190,6 +183,7 @@
   </section>
 </body>
         <footer>
+                <div id="qualityIndicator" style="margin: 0 30px 1rem; font-weight: bold;">Qualità GPS: –</div>
 	              <div id="map" ></div>
                 <script src="map.js"></script>
                 <script src="storage.js"></script>
