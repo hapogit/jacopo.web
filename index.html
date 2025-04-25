@@ -85,6 +85,24 @@
       overflow-y: auto;
       box-shadow: 0 5px 20px rgba(0,0,0,0.15);
     }
+    @media (max-width: 768px) {
+  body {
+    font-size: 16px; 
+  }
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 2rem 1rem;
+  }
+  .hero-text {
+    max-width: 100%;
+    margin-bottom: 1.5rem;
+  }
+  .buttons a {
+    width: 140px;
+    text-align: center;
+  }
+}
   </style>
 </head>
 <body>
@@ -97,7 +115,7 @@
   </header>
   <section class="hero">
     <div class="hero-text">
-     <h1 style="color: #abd2df; font-size: 2.5rem;">LogBook</h1>
+     <h1 style="color: #abd2df; font-size: 2.5rem; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">LogBook</h1>
       <p style="font-size: 1.2rem; margin-bottom: 2rem; color: #555;">Starting new Route</p>
     <div class="buttons">
         <a href="software/logbook.html" class="btn-start">Start</a>
