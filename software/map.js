@@ -17,6 +17,7 @@ function updateMapMarkers() {
     if (!markersLayer) return;
     markersLayer.clearLayers();
 
+    // Recupera i task e costruisci l'array completo di coordinate
     const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
     const routeCoords = [];
 
@@ -25,23 +26,42 @@ function updateMapMarkers() {
         if (match) {
             const lat = parseFloat(match[1]);
             const lon = parseFloat(match[2]);
-
             if (!isNaN(lat) && !isNaN(lon)) {
-                const marker = L.marker([lat, lon]).addTo(markersLayer)
-                    .bindPopup(`<strong>${task.date}</strong><br>${task.notes || ''}`);
                 routeCoords.push([lat, lon]);
             }
         }
     });
 
+    // Disegna la polyline su tutte le coordinate
     if (routeCoords.length > 1) {
         const polyline = L.polyline(routeCoords, { color: 'blue' }).addTo(markersLayer);
         map.fitBounds(polyline.getBounds());
 
         const totalNM = calculateTotalDistanceNM(routeCoords);
-        const distanceDiv = document.getElementById('totalDistance');
-        distanceDiv.innerHTML = ` Distanza Approssimativa: <strong>${totalNM} M</strong>`;
+        document.getElementById('totalDistance').innerHTML =
+            ` Distanza Approssimativa: <strong>${totalNM} M</strong>`;
     }
+
+    // Determina quali indici marcare: se <=3 punti, tutti; altrimenti solo primo e ultimo
+    let markerIndices;
+    if (routeCoords.length <= 3) {
+        markerIndices = routeCoords.map((_, i) => i);
+    } else {
+        markerIndices = [0, routeCoords.length - 1];
+    }
+
+    // Crea solo i marker selezionati con colore differente e popup
+    markerIndices.forEach(idx => {
+        const [lat, lon] = routeCoords[idx];
+        const circle = L.circleMarker([lat, lon], {
+            radius: 6,
+            color: idx === 0 ? 'green' : 'red',
+            fillOpacity: 1
+        }).addTo(markersLayer);
+
+        const task = tasks[idx];
+        circle.bindPopup(`<strong>${task.date}</strong><br>${task.notes || ''}`);
+    });
 }
 
 function calculateTotalDistanceNM(coords) {
@@ -58,11 +78,10 @@ function calculateTotalDistanceNM(coords) {
                   Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
                   Math.sin(dLon / 2) ** 2;
         const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        const d = R * c;
-        total += d;
+        total += R * c;
     }
 
-    return (total * 0.539957).toFixed(2); // km to NM
+    return (total * 0.539957).toFixed(2); // km → NM
 }
 
 function toRad(deg) {
