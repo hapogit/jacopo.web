@@ -24,15 +24,5 @@
 
 ---
 
-## 🤝 Contribuire
-
-1. Fai *fork* del repository.
-2. Crea un branch: `git checkout -b feature/nome-feature`.
-3. Aggiungi le tue modifiche e committa: `git commit -m "Descrizione feature"`.
-4. Pusha sul tuo branch: `git push origin feature/nome-feature`.
-5. Apri una Pull Request su GitHub.
-
----
-
 *Buon vento e buon coding!* 🌬️💻
 
