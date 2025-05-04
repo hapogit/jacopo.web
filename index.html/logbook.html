@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="icon" href="../media/favicon.ico" type="image/x-icon">
+		   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+       <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+       <link rel="stylesheet" href="../style.css/logbook.css">		
+  <title>LogBook</title>
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="index.html" style="text-decoration: none; color: #555;">Li8r3tt0</a></div>
+    <nav>
+      <a href="logbook.html">Logbook</a>
+    </nav>
+  </header>
+  <section class="hero">
+    <div class="hero-text">
+      <div class="form-group" style="padding: 1rem; margin-bottom: 1rem; box-shadow: 0 5px 20px rgba(0,0,0,0.15); border-radius: 8px; background-color: #abd2df;">
+        <label for="logDisplay" style="border-radius: 8px;">(Log)</label>
+        <input type="text" id="logDisplay" style="border-radius: 8px;  border: 1px solid #abd2df;" readonly value="-" /> 
+      </div>
+      <form id="taskForm">
+        <div class="form-group">
+          <label for="tws">(True Wind Speed)</label>
+          <select id="tws" aria-describedby="twsHelp">
+            <option value="">TWS...</option>
+            <script>
+              for (let i = 2; i <= 30; i += 0.5) {
+                document.write(`<option value="${i}">${i} kt</option>`);
+              }
+            </script>
+          </select>
+        </div>     
+        <div class="form-group">
+          <label for="twa">(True Wind Angle)</label>
+          <select id="twa" aria-describedby="twaHelp">
+            <option value="">TWA...</option>
+            <script>
+              for (let i = 40; i <= 180; i++) {
+                document.write(`<option value="${i}">${i}°</option>`);
+              }
+            </script>
+          </select>
+        </div>           
+        <div class="form-group">
+          <label for="sails">(Sail)</label>
+          <select id="sails">
+            <option value="">Sail...</option>
+            <option value="MJ1">MJ1</option>
+            <option value="MJ2">MJ2</option>
+            <option value="MJ3">MJ3</option>
+            <option value="MJ0">MJ0</option>
+            <option value="MA1">MA1</option>
+            <option value="MA2">MA2</option>
+            <option value="MA3">MA3</option>
+          </select>
+        </div>
+        <button type="button" class="save-btn">SAVE DATA</button>
+        <button class="clearHistory">CLEAR CONSOLE</button>
+        <div class="form-group">
+          <input type="checkbox" id="autoUpdate" />
+          <label for="autoUpdate">AUTO UPDATE</label>
+          <span id="autoUpdateIndicator" style="margin-left:8px; color:#555;">🔄 OFF</span>
+        </div>
+      </form>      
+		<script>
+		document.addEventListener('DOMContentLoaded', () => {
+    loadTasks();
+    startTimer();
+    initMap();
+    // Pulisci cronologia
+    const clearHistoryBtn = document.querySelector('.clearHistory');
+    if (clearHistoryBtn) clearHistoryBtn.addEventListener('click', clearAllData);
+    // Pulsante Salva
+    const saveBtn = document.querySelector('.save-btn');
+    saveBtn.addEventListener('click', saveActivity);
+    });
+    </script>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        // … esistenti: loadTasks(), startTimer(), initMap(), ecc.
+      
+        // ---- AUTO UPDATE ----
+        const autoUpdateCheckbox    = document.getElementById('autoUpdate');
+        const autoUpdateIndicator   = document.getElementById('autoUpdateIndicator');
+        let   autoUpdateIntervalId = null;
+      
+        // 1) Ripristina stato da localStorage
+        autoUpdateCheckbox.checked = JSON.parse(localStorage.getItem('autoUpdate')) || false;
+        setAutoUpdateState(autoUpdateCheckbox.checked);
+      
+        // 2) Al cambio di spunta, salva e avvia/interrompi
+        autoUpdateCheckbox.addEventListener('change', () => {
+          const enabled = autoUpdateCheckbox.checked;
+          localStorage.setItem('autoUpdate', JSON.stringify(enabled));
+          setAutoUpdateState(enabled);
+        });
+      
+        // Funzione che gestisce l’indicatore e l’intervallo
+        function setAutoUpdateState(enabled) {
+          if (enabled) {
+            // badge ON
+            autoUpdateIndicator.textContent = '🔄 ON';
+            autoUpdateIndicator.style.color = 'green';
+            startAutoUpdate();
+          } else {
+            // badge OFF
+            autoUpdateIndicator.textContent = '🔄 OFF';
+            autoUpdateIndicator.style.color = '#555';
+            stopAutoUpdate();
+          }
+        }
+      
+        // Avvia il loop a 5,5 s, e ferma il timer “Ultima attività”
+        function startAutoUpdate() {
+          // pausa il timer a 1 s
+          if (window.timerInterval) clearInterval(window.timerInterval);
+          // richiamo immediato
+          saveActivity();
+          // poi fisso ogni 5500 ms
+          autoUpdateIntervalId = setInterval(() => {
+            saveActivity();
+          }, 5500);
+        }
+      
+        // Ferma il loop e riavvia il timer “Ultima attività”
+        function stopAutoUpdate() {
+          if (autoUpdateIntervalId) clearInterval(autoUpdateIntervalId);
+          // ripristina timer normale
+          startTimer();
+        }
+      });
+      </script>      
+		            </div>	
+            </div>					
+    </div>
+    <div class="console">
+                <ul class="warning-container"><ul id="locationWarning" style="display: none; color: red;">⚠️ GPS Impreciso (>50m)</ul></ul>
+		            <div id="timer" class="timer"> 
+	              <div id="lastActivity">Ultima attività:</div>
+                <div id="totalDistance">Distanza Totale: 0 M</div> 
+	              </div>
+        <table id="tasksTable">
+            <thead>
+                    <tr>
+                    <th>Data e Ora /</th>
+                    <th>GPS /</th>
+                    <th>TWS /</th>
+                    <th>TWA /</th>
+                    <th>LOG </th>
+                    </tr>
+            </thead>
+                    <tbody>
+                    </tbody>
+        </table>
+                    </div>
+    </div>
+  </section>
+</body>
+        <footer>
+                <div id="qualityIndicator" style="margin: 0 30px 1rem; font-weight: bold;">GPS Quality: –</div>
+	              <div id="map" ></div>
+                <script src="../script.js/map.js"></script>
+                <script src="../script.js/storage.js"></script>
+                <script src="../script.js/storico.js"></script>
+		</footer>
+    </html>
