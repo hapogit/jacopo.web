@@ -1,0 +1,101 @@
+* {
+  box-sizing: border-box;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  background-color: #b7d6e0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  border-radius: 8px;
+}
+body {
+  font-family: 'Segoe UI', sans-serif;
+  color: #1c1e21;
+  background-image: url('globe.svg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: cover;
+  background-color: #f8f9fc;
+}
+.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+}
+nav a {
+  margin-left: 20px;
+  text-decoration: none;
+  color: #555;
+  font-weight: 500;
+}
+.hero {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4rem 2rem;
+}
+.hero-text {
+  max-width: 50%;
+}
+.hero-text .buttons a {
+  display: inline-block;
+  padding: 0.75rem 1.5rem;
+  margin-right: 1rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: bold;
+}
+.btn-start {
+  border: 2px solid #B5D7E3;
+  background-color: #B5D7E3;
+  color: #555;
+}
+.btn-start:hover {
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  background-color: #B5D7E3;
+  background-color: #B5D7E3;
+}
+.btn-download {
+  border: 2px solid #abd2df;
+  background-color: #abd2df;
+  color: #555;
+}
+.btn-download:hover {
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+  background-color: #9bbfcb;
+  border: 2px solid #9bbfcb;
+}
+.console {
+  background-color: #abd2df;
+  color: black;
+  padding: 1rem;
+  border-radius: 8px;
+  font-family: monospace;
+  width: 45%;
+  height: 300px;
+  overflow-y: auto;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+}
+@media (max-width: 768px) {
+
+body {
+  font-size: 16px; 
+}
+.hero {
+  flex-direction: column;
+  align-items: stretch;
+  padding: 2rem 1rem;
+}
+.hero-text {
+  max-width: 100%;
+  margin-bottom: 1.5rem;
+}
+.buttons a {
+  width: 140px;
+  text-align: center;
+}
+.console {
+  width: 100%;
+}
+}
